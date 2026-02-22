@@ -35,8 +35,7 @@ with DAG(
     default_args=default_args,
     description="DAG to produce JSON file with raw data",
     schedule="0 14 * * *",
-    catchup=False,
-    schedule=None,
+    catchup=False
 ) as dag:
 
     # Define tasks
@@ -59,8 +58,7 @@ with DAG(
     default_args=default_args,
     description="DAG to update database with raw data",
     schedule="0 15 * * *",
-    catchup=False,
-    schedule=None,
+    catchup=False
 ) as dag:
     update_staging = staging_table()
     update_core = core_table()

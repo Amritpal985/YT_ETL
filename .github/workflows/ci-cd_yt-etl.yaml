@@ -98,6 +98,9 @@ jobs:
             for DAG in "${DAG_NAMES[@]}"; do 
               docker exec -t airflow-worker sh -c "airflow dags test $DAG"
             done
+        - name: Fix permissions inside container
+          run: |
+           docker exec airflow-worker chmod -R 777 /opt/airflow/data
         - name: Copy JSON from container
           if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
           run: |

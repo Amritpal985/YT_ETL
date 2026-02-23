@@ -98,6 +98,18 @@ jobs:
             for DAG in "${DAG_NAMES[@]}"; do 
               docker exec -t airflow-worker sh -c "airflow dags test $DAG"
             done
+        - name: Copy JSON from container
+          if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
+          run: |
+            mkdir -p data
+            docker cp airflow-worker:/opt/airflow/data/. ./data
+        - name: Upload JSON as artifact
+          if: always()
+          uses: actions/upload-artifact@v4
+          with:
+            name: yt-json
+            path: data/*.json
+            if-no-files-found: ignore
         - name: Tear down Docker Compose
           if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
           run: docker compose down
